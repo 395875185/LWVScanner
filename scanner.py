@@ -3,6 +3,7 @@ import argparse
 from crawler.crawler import Crawler
 from detector.sqli_detector import SQLiDetector
 from detector.xss_detector import XSSDetector
+from detector.csrf_detector import CSRFDetector
 from reporter.html_report import HTMLReport
 
 def parse_args():
@@ -18,11 +19,13 @@ def main():
     pages = crawler.crawl()
     sqli = SQLiDetector()
     xss = XSSDetector()
+    csrf = CSRFDetector()
     findings = []
     for page in pages:
         for form in page.forms:
             findings.extend(sqli.test_form(form))
             findings.extend(xss.test_form(form))
+            findings.extend(csrf.test_form(form))
     report = HTMLReport(args.url, len(pages), findings)
     out = report.generate(args.output)
     print(f"Report saved to {out} with {len(findings)} findings.")
